@@ -108,3 +108,9 @@ Changelog:
   - Fixed unhandled promise rejections in currency detection
   - Added comprehensive error handling for IP geolocation APIs
   - Configured frontend-only routing with client-side fallbacks
+- July 23, 2025. Fixed Netlify deployment and enhanced pricing calculator:
+  - Removed blog section from home page as requested
+  - Added new pricing features: Shipping Gateway Integration (₹5,000), Zoho Inventory Integration (₹7,000), Extra Features (₹1,000-₹5,000)
+  - Fixed Netlify deployment by updating build configuration to frontend-only
+  - Added proper _redirects file in client/public for SPA routing
+  - Updated netlify.toml to use correct build output directory (dist/public)
