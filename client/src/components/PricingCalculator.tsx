@@ -22,6 +22,9 @@ const PricingCalculator = () => {
   const [hosting, setHosting] = useState('client');
   const [backend, setBackend] = useState('no');
   const [revisions, setRevisions] = useState(0);
+  const [shippingGateway, setShippingGateway] = useState('no');
+  const [zohoInventory, setZohoInventory] = useState('no');
+  const [extraFeatures, setExtraFeatures] = useState('none');
   const { toast } = useToast();
 
   // Calculated prices
@@ -30,6 +33,9 @@ const PricingCalculator = () => {
   const [hostingPrice, setHostingPrice] = useState(0);
   const [backendPrice, setBackendPrice] = useState(0);
   const [revisionsPrice, setRevisionsPrice] = useState(0);
+  const [shippingGatewayPrice, setShippingGatewayPrice] = useState(0);
+  const [zohoInventoryPrice, setZohoInventoryPrice] = useState(0);
+  const [extraFeaturesPrice, setExtraFeaturesPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(7000);
 
   // Complexity multipliers
@@ -116,15 +122,29 @@ const PricingCalculator = () => {
     const hostingCost = hosting === 'developer' ? (currency === 'inr' ? 2000 : 24) : 0;
     const backendCost = backend === 'yes' ? (currency === 'inr' ? 5000 : 60) : 0;
     const extraRevisionsCost = revisions * service.extraRevision;
+    
+    // New features pricing in rupees
+    const shippingGatewayCost = shippingGateway === 'yes' ? (currency === 'inr' ? 5000 : 60) : 0;
+    const zohoInventoryCost = zohoInventory === 'yes' ? (currency === 'inr' ? 7000 : 84) : 0;
+    
+    let extraFeaturesCost = 0;
+    if (extraFeatures === 'basic') {
+      extraFeaturesCost = currency === 'inr' ? 1000 : 12; // ₹1,000
+    } else if (extraFeatures === 'advanced') {
+      extraFeaturesCost = currency === 'inr' ? 5000 : 60; // ₹5,000
+    }
 
     setBasePrice(service.base);
     setExtraPagesPrice(extraPageCost);
     setHostingPrice(hostingCost);
     setBackendPrice(backendCost);
     setRevisionsPrice(extraRevisionsCost);
+    setShippingGatewayPrice(shippingGatewayCost);
+    setZohoInventoryPrice(zohoInventoryCost);
+    setExtraFeaturesPrice(extraFeaturesCost);
 
-    setTotalPrice(service.base + extraPageCost + hostingCost + backendCost + extraRevisionsCost);
-  }, [serviceType, pagesCount, complexity, hosting, backend, revisions, currency]);
+    setTotalPrice(service.base + extraPageCost + hostingCost + backendCost + extraRevisionsCost + shippingGatewayCost + zohoInventoryCost + extraFeaturesCost);
+  }, [serviceType, pagesCount, complexity, hosting, backend, revisions, shippingGateway, zohoInventory, extraFeatures, currency]);
 
   const handleContactClick = () => {
     const whatsappNumber = "917093764745";
@@ -287,6 +307,70 @@ const PricingCalculator = () => {
               </span>
             </div>
           </div>
+
+          {/* Shipping Gateway Integration */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-2 text-neutral-700">Shipping Gateway Integration</Label>
+            <RadioGroup
+              value={shippingGateway}
+              onValueChange={setShippingGateway}
+              className="gap-2 flex flex-col space-y-2 mt-[9px] mb-[9px]"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="shipping-no" className="radio-primary" />
+                <Label htmlFor="shipping-no" className="cursor-pointer">Not required ({formatPrice(0, currency)})</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="shipping-yes" className="radio-primary" />
+                <Label htmlFor="shipping-yes" className="cursor-pointer">Required ({formatPrice(currency === 'inr' ? 5000 : 60, currency)})</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Zoho Inventory Integration */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-2 text-neutral-700">Zoho Inventory Integration</Label>
+            <RadioGroup
+              value={zohoInventory}
+              onValueChange={setZohoInventory}
+              className="gap-2 flex flex-col space-y-2 mt-[9px] mb-[9px]"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="zoho-no" className="radio-primary" />
+                <Label htmlFor="zoho-no" className="cursor-pointer">Not required ({formatPrice(0, currency)})</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="zoho-yes" className="radio-primary" />
+                <Label htmlFor="zoho-yes" className="cursor-pointer">Required ({formatPrice(currency === 'inr' ? 7000 : 84, currency)})</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          {/* Extra Features */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-2 text-neutral-700">Extra Features</Label>
+            <RadioGroup
+              value={extraFeatures}
+              onValueChange={setExtraFeatures}
+              className="gap-2 flex flex-col space-y-2 mt-[9px] mb-[9px]"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="features-none" className="radio-primary" />
+                <Label htmlFor="features-none" className="cursor-pointer">None ({formatPrice(0, currency)})</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="basic" id="features-basic" className="radio-primary" />
+                <Label htmlFor="features-basic" className="cursor-pointer">Basic Features ({formatPrice(currency === 'inr' ? 1000 : 12, currency)})</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="advanced" id="features-advanced" className="radio-primary" />
+                <Label htmlFor="features-advanced" className="cursor-pointer">Advanced Features ({formatPrice(currency === 'inr' ? 5000 : 60, currency)})</Label>
+              </div>
+            </RadioGroup>
+            <p className="text-xs text-neutral-500 mt-2">
+              Features may include third-party API integrations, custom functionalities, and advanced user interactions.
+            </p>
+          </div>
         </div>
 
         <motion.div 
@@ -351,6 +435,39 @@ const PricingCalculator = () => {
             >
               <span className="text-neutral-700">Extra Revisions</span>
               <span className="font-medium text-neutral-900">{formatPrice(revisionsPrice, currency)}</span>
+            </motion.div>
+
+            <motion.div 
+              className="flex justify-between items-center pb-2 border-b border-neutral-200"
+              key={`shipping-${shippingGatewayPrice}`}
+              initial={{ opacity: 0.6 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="text-neutral-700">Shipping Gateway</span>
+              <span className="font-medium text-neutral-900">{formatPrice(shippingGatewayPrice, currency)}</span>
+            </motion.div>
+
+            <motion.div 
+              className="flex justify-between items-center pb-2 border-b border-neutral-200"
+              key={`zoho-${zohoInventoryPrice}`}
+              initial={{ opacity: 0.6 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="text-neutral-700">Zoho Inventory</span>
+              <span className="font-medium text-neutral-900">{formatPrice(zohoInventoryPrice, currency)}</span>
+            </motion.div>
+
+            <motion.div 
+              className="flex justify-between items-center pb-2 border-b border-neutral-200"
+              key={`extra-features-${extraFeaturesPrice}`}
+              initial={{ opacity: 0.6 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="text-neutral-700">Extra Features</span>
+              <span className="font-medium text-neutral-900">{formatPrice(extraFeaturesPrice, currency)}</span>
             </motion.div>
           </div>
 
