@@ -8,7 +8,7 @@ import PricingCalculator from '@/components/PricingCalculator';
 import ServiceCard from '@/components/ServiceCard';
 import PortfolioCard from '@/components/PortfolioCard';
 import TestimonialCard from '@/components/TestimonialCard';
-import BlogSectionPreview from '@/components/BlogSectionPreview';
+
 import AboutSection from '@/components/AboutSection';
 
 import { serviceDisplayData, getServiceWithPricing } from '@/lib/serviceData';
@@ -322,8 +322,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Blog Preview Section */}
-      <BlogSectionPreview />
+      
 
       {/* About Us Section */}
       <AboutSection />
