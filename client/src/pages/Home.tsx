@@ -183,7 +183,7 @@ const Home = () => {
               Simple, Transparent Pricing
             </motion.h2>
             <motion.p 
-              className="text-lg text-neutral-300"
+              className="text-lg text-[#36363b]"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
